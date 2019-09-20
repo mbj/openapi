@@ -195,12 +195,15 @@ newtype Enum = Enum [JSON.Value]
   deriving newtype (JSON.FromJSON, JSON.ToJSON)
   deriving stock   (Eq, Show)
 
-data Format = UnixTime
+data Format
+  = InformalDecimal -- Emitted by stripe, not an official format
+  | UnixTime
   deriving stock (Eq, GHC.Bounded, GHC.Enum, Show)
 
 instance ToText Format where
   toText = \case
-    UnixTime -> "unix-time"
+    InformalDecimal -> "decimal"
+    UnixTime        -> "unix-time"
 
 instance JSON.FromJSON Format where
   parseJSON = parseJSONFixed "Format" JSON.withText toText
