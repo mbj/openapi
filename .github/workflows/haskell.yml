@@ -1,0 +1,51 @@
+name: Haskell CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:3.10
+    steps:
+    - name: Setup build dependencies
+      run: |
+        echo $'-----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvCahdd8oZywDQbvSaukg
+        7HvfgAGW6kRk0n6Ae1f+e5dIzbFBW8AQTULubf6brfEoJLSgHijnDEY56nJsDJAK
+        Nq4NTeYHgOQxZ1K3I55Fk/53vstyJPUTzy/BhX/2lNZohpaGGuM+20baPJ3hf6GA
+        Wa5JGagrvbIQdivQC1AnAiOallJ7nixCjItJZuY8r3I3gqoIP3IPyRJipTlQ6seo
+        wQm7DWpTeRiLk/kbx0XutIIGs/9/xkmwaNd266eMD6N5M01Z/SkmC6QAnnUlEoez
+        YpC9sLubFQFbUqJ5SJ9BYQ5xkEl5JHa7yScyimsK02xHRQY+yeo5FK0jtvPoLekX
+        AwIDAQAB
+        -----END PUBLIC KEY-----' >> /etc/apk/keys/mrh-apk.rsa.pub
+        echo https://mrh-state-alpinepackagesbucket-eu8bh5k00ruo.s3.dualstack.us-east-1.amazonaws.com >> /etc/apk/repositories
+        apk add                         \
+        --no-cache                      \
+        --                              \
+        cache-s3=0.1.5-r0               \
+        curl=7.66.0-r0                  \
+        ghc=8.6.5-r0                    \
+        git=2.22.0-r0                   \
+        make=4.2.1-r2                   \
+        musl-dev=1.1.22-r3              \
+        ncurses-dev=6.1_p20190518-r0    \
+        ncurses-static=6.1_p20190518-r0 \
+        stack=1.9.3-r0                  \
+        xz=5.2.4-r0                     \
+        zlib-dev=1.2.11-r1
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        # Avoid stack check of different parent directory owner
+        mount
+        ls -la .
+        chown root:root -R /github/home
+        chown root:root -R $(pwd)
+        stack build --dependencies-only --system-ghc
+    - name: Build
+      run: |
+        stack build --fast --test --no-run-tests --system-ghc
+    - name: Run Tests
+      run: |
+        stack test --fast
