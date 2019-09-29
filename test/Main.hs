@@ -90,7 +90,7 @@ parseResponses :: TestTree
 
     rejected :: [TestTree]
     rejected = mkRejected (JSON.parseJSON @Paths.Responses) "Error in $:" <$>
-      [ ("", "expected responses, encountered String")
+      [ ("", "parsing responses failed, expected Object, but encountered String")
       , (JSON.object [("", JSON.object empty)], "Invalid status code pattern: \"\"")
       , (JSON.object [("-1", JSON.object empty)], "Invalid status code pattern: \"-1\"")
       , (JSON.object [("0", JSON.object empty)], "Invalid status code pattern: \"0\"")
