@@ -64,8 +64,23 @@ data Server = Server
 instance JSON.FromJSON Server where
   parseJSON = genericParseJSON
 
+data Info = Info
+  { description    :: Maybe (Description Info)
+  , title          :: TaggedText "InfoTitle" ()
+  , version        :: TaggedText "InfoVersion" ()
+  , termsOfService :: TaggedText "InfoTermsOfService" ()
+  }
+  deriving stock (Eq, Generic, Show)
+
+instance HasDescription Info where
+  getDescription Info{..} = description
+
+instance JSON.FromJSON Info where
+  parseJSON = genericParseJSON
+
 data Specification = Specification
   { components :: Components
+  , info       :: Info
   , paths      :: Map Paths.Template Paths.Item
   , servers    :: [Server]
   , tags       :: [Tag]
