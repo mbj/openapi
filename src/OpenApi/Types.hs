@@ -55,9 +55,19 @@ data Tag = Tag
 instance JSON.FromJSON Tag where
   parseJSON = genericParseJSON
 
+data Server = Server
+  { url         :: TaggedText "ServerURL" ()
+  , description :: Description Server
+  }
+  deriving stock (Eq, Generic, Show)
+
+instance JSON.FromJSON Server where
+  parseJSON = genericParseJSON
+
 data Specification = Specification
   { components :: Components
   , paths      :: Map Paths.Template Paths.Item
+  , servers    :: [Server]
   , tags       :: [Tag]
   }
   deriving stock (Eq, Generic, Show)
