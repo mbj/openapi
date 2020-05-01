@@ -2,6 +2,7 @@ module OpenApi.Types where
 
 import Data.Map (Map)
 import GHC.Generics (Generic)
+import OpenApi.Description
 import OpenApi.JSON
 import OpenApi.Prelude
 import OpenApi.TaggedText
@@ -45,9 +46,19 @@ data Components = Components
 instance JSON.FromJSON Components where
   parseJSON = genericParseJSON
 
+data Tag = Tag
+  { name         :: TaggedText "TagName" ()
+  , description  :: Description Tag
+  }
+  deriving stock (Eq, Generic, Show)
+
+instance JSON.FromJSON Tag where
+  parseJSON = genericParseJSON
+
 data Specification = Specification
   { components :: Components
   , paths      :: Map Paths.Template Paths.Item
+  , tags       :: [Tag]
   }
   deriving stock (Eq, Generic, Show)
 
