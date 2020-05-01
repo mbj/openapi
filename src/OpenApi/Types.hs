@@ -81,6 +81,7 @@ instance JSON.FromJSON Info where
 data Specification = Specification
   { components :: Components
   , info       :: Info
+  , openapi    :: TaggedText "OpenapiVersion" ()
   , paths      :: Map Paths.Template Paths.Item
   , servers    :: [Server]
   , tags       :: [Tag]
