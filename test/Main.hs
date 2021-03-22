@@ -51,6 +51,7 @@ parsePathTemplate
       , ("/1",           PathTemplate [static' "1"])
       , ("/__foo__",     PathTemplate [static' "__foo__"])
       , ("/foo",         PathTemplate [static' "foo"])
+      , ("/foo-bar",     PathTemplate [static' "foo-bar"])
       , ("/foo/bar",     PathTemplate [static' "foo", static' "bar"])
       , ("/foo/{bar}",   PathTemplate [static' "foo", dynamic "bar"])
       , ("/foo_bar",     PathTemplate [static' "foo_bar"])
